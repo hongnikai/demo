@@ -1,7 +1,11 @@
 package com.example.pdf.img;
 
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +13,7 @@ public class IMG3 {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         List<String> list = new ArrayList<String>();
         String inputStr = "<p>wseqweqwdewqeqweqweqw<img src='ueditor/jsp/upload/image/20161117/1479366071667028023.png' title='1479366071667028023.png' " +
                 "alt='2016-11-16_010256.png' style='' ></p>asdasdasdasdasd";
@@ -35,6 +39,18 @@ public class IMG3 {
                 result_img = m_img.find();
             }
         }
+
+        ExpiringMap<String,String> map = ExpiringMap.builder()
+                .maxSize(100)
+                .expiration(1, TimeUnit.SECONDS)
+                .expirationPolicy(ExpirationPolicy.ACCESSED)
+                .variableExpiration()
+                .build();
+        map.put("test","test123");
+        Thread.sleep(500);
+        String test= map.get("test");
+        System.err.println(test);
+
     }
 
 
